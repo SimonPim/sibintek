@@ -10,9 +10,17 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'sibintek-samjam.amvera.io',  # Твой домен Amvera
-    '.amvera.io',  # Разрешить все поддомены amvera.io
-    '.amvera.app',  # И amvera.app
+    'sibintek-samjam.amvera.io',
+    '.amvera.io',
+    '.amvera.app',
+    '*',  # Разрешить все хосты (для тестирования)
+]
+
+# Для CSRF защиты
+CSRF_TRUSTED_ORIGINS = [
+    'https://sibintek-samjam.amvera.io',
+    'https://*.amvera.io',
+    'https://*.amvera.app',
 ]
 
 # Доверенные источники для CSRF
