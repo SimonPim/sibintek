@@ -1,26 +1,16 @@
-FROM python:3.13-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
-# Установка системных пакетов
-RUN apt-get update && apt-get install -y gcc libpq-dev && rm -rf /var/lib/apt/lists/*
-
-# Копируем requirements
+# Копируем зависимости
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn psycopg2-binary
 
 # Копируем весь проект
 COPY . .
 
-# Собираем статику
-RUN python manage.py collectstatic --noinput
+# Создаём папку для базы данных (постоянное хранилище)
+RUN mkdir -p /data
 
-# Переменные
-ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=config.settings
-
-EXPOSE 8000
-
-# Запуск
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py shell -c \"from django.contrib.auth.models import User; User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', '', 'admin123')\" && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2"]
+# Запускаем сервер
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
