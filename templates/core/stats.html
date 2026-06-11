@@ -1,0 +1,214 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Статистика - СИБИНТЕК{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-bottom: 32px;">
+    <h1 style="font-size: 32px; margin-bottom: 8px; font-weight: 800;">Аналитика и статистика</h1>
+    <p style="color: var(--text-light);">Обзор состояния системы управления заявками</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 32px;">
+    <div class="card" style="border-left: 4px solid var(--primary);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg style="width: 24px; height: 24px; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+        </div>
+        <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">{{ total }}</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500;">Всего заявок</div>
+        <div style="font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 6px; display: inline-block; font-weight: 600; background: #d1fae5; color: #047857;">100% от общего числа</div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--info);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: #dbeafe; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg style="width: 24px; height: 24px; color: #1d4ed8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+        </div>
+        <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">{{ new_count }}</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500;">Новые заявки</div>
+        <div style="font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 6px; display: inline-block; font-weight: 600; background: {% if new_count > 0 %}#fee2e2{% else %}#d1fae5{% endif %}; color: {% if new_count > 0 %}#dc2626{% else %}#047857{% endif %};">
+            {% widthratio new_count total 100 %}% от всех
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--warning);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: #fef3c7; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg style="width: 24px; height: 24px; color: #b45309;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+        </div>
+        <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">{{ work_count }}</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500;">В работе</div>
+        <div style="font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 6px; display: inline-block; font-weight: 600; background: {% if work_count > 0 %}#fee2e2{% else %}#d1fae5{% endif %}; color: {% if work_count > 0 %}#dc2626{% else %}#047857{% endif %};">
+            {% widthratio work_count total 100 %}% от всех
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--success);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: #d1fae5; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg style="width: 24px; height: 24px; color: #047857;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
+        <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">{{ done_count }}</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500;">Выполнено</div>
+        <div style="font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 6px; display: inline-block; font-weight: 600; background: #d1fae5; color: #047857;">
+            {% widthratio done_count total 100 %}% от всех
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--text-light);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <svg style="width: 24px; height: 24px; color: #4b5563;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+        </div>
+        <div style="font-size: 36px; font-weight: 800; margin-bottom: 4px;">{{ closed_count }}</div>
+        <div style="font-size: 14px; color: var(--text-light); font-weight: 500;">Закрыто</div>
+        <div style="font-size: 12px; margin-top: 8px; padding: 4px 8px; border-radius: 6px; display: inline-block; font-weight: 600; background: #d1fae5; color: #047857;">
+            {% widthratio closed_count total 100 %}% от всех
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">Распределение заявок по статусам</h2>
+
+    <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+            <span style="font-weight: 600;">Новые</span>
+            <span style="color: var(--text-light);">{{ new_count }} ({{ new_count|floatformat:1 }}%)</span>
+        </div>
+        <div style="height: 12px; background: var(--bg); border-radius: 10px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 10px; width: 0%; transition: width 1s ease;"
+                 data-width="{% if total > 0 %}{{ new_count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+            <span style="font-weight: 600;">В работе</span>
+            <span style="color: var(--text-light);">{{ work_count }} ({{ work_count|floatformat:1 }}%)</span>
+        </div>
+        <div style="height: 12px; background: var(--bg); border-radius: 10px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 10px; width: 0%; transition: width 1s ease;"
+                 data-width="{% if total > 0 %}{{ work_count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+            <span style="font-weight: 600;">Выполнено</span>
+            <span style="color: var(--text-light);">{{ done_count }} ({{ done_count|floatformat:1 }}%)</span>
+        </div>
+        <div style="height: 12px; background: var(--bg); border-radius: 10px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 10px; width: 0%; transition: width 1s ease;"
+                 data-width="{% if total > 0 %}{{ done_count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+            <span style="font-weight: 600;">Закрыто</span>
+            <span style="color: var(--text-light);">{{ closed_count }} ({{ closed_count|floatformat:1 }}%)</span>
+        </div>
+        <div style="height: 12px; background: var(--bg); border-radius: 10px; overflow: hidden;">
+            <div style="height: 100%; background: linear-gradient(90deg, #6b7280, #9ca3af); border-radius: 10px; width: 0%; transition: width 1s ease;"
+                 data-width="{% if total > 0 %}{{ closed_count|floatformat:0 }}{% else %}0{% endif %}%"></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 20px;">Распределение по статусам</h2>
+    <div style="position: relative; height: 400px; max-width: 600px; margin: 0 auto;">
+        <canvas id="pieChart"></canvas>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div class="card" style="border-left: 4px solid var(--primary);">
+        <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Активность</div>
+        <div style="font-size: 20px; font-weight: 700;">
+            {% if total > 0 %}{% widthratio done_count total 100 %}% выполнено{% else %}Нет данных{% endif %}
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--warning);">
+        <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">В работе</div>
+        <div style="font-size: 20px; font-weight: 700;">
+            {% if total > 0 %}{% widthratio work_count total 100 %}% заявок{% else %}Нет активных{% endif %}
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--success);">
+        <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Эффективность</div>
+        <div style="font-size: 20px; font-weight: 700;">
+            {% if total > 0 %}{% widthratio done_count total 100 %}% успеха{% else %}Нет данных{% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const total = {{ total|default:0 }};
+    const newData = {{ new_count|default:0 }};
+    const workData = {{ work_count|default:0 }};
+    const doneData = {{ done_count|default:0 }};
+    const closedData = {{ closed_count|default:0 }};
+
+    const colors = {
+        new: '#3b82f6',
+        work: '#f59e0b',
+        done: '#10b981',
+        closed: '#6b7280'
+    };
+
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Новые', 'В работе', 'Выполнено', 'Закрыто'],
+            datasets: [{
+                data: [newData, workData, doneData, closedData],
+                backgroundColor: [colors.new, colors.work, colors.done, colors.closed],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 15, font: { size: 12 } }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    window.addEventListener('load', () => {
+        document.querySelectorAll('[data-width]').forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            setTimeout(() => { bar.style.width = width; }, 300);
+        });
+    });
+</script>
+{% endblock %}

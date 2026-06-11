@@ -1,0 +1,9 @@
+meta:
+  environment: docker
+  
+build:
+  dockerfile: Dockerfile
+  
+run:
+  containerPort: 8000
+  persistentMount: /app/data

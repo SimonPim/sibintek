@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Создание заявки - СИБИНТЕК{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Новая заявка</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Название заявки *</label>
+            <input type="text" name="naimenovanie" required
+                   style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+        </div>
+
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Сервис / Оборудование</label>
+            <input type="text" name="servis_text" placeholder="Например: Принтер HP, Сервер в офисе №1, Сеть Wi-Fi..."
+                   style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Статус *</label>
+            <select name="status" required
+                    style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+                {% for status in statusy %}
+                <option value="{{ status.id }}">{{ status.status }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Исполнитель</label>
+            <select name="ispolnitel" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+                <option value="">-- Не назначен --</option>
+                {% for ispolnitel in ispolniteli %}
+                <option value="{{ ispolnitel.id }}">{{ ispolnitel.familia }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Приоритет</label>
+            <select name="priority" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+                <option value="low">Низкий</option>
+                <option value="medium" selected>Средний</option>
+                <option value="high">Высокий</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Срок выполнения</label>
+            <input type="date" name="srok_zayavki"
+                   style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--card); color: var(--text);">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-light); font-size: 14px;">Описание проблемы *</label>
+            <textarea name="opisanie_problem" required
+                      style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; min-height: 120px; resize: vertical; background: var(--card); color: var(--text);"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 32px;">
+            <button type="submit" class="btn btn-primary">Создать заявку</button>
+            <a href="/" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

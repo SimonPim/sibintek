@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @top-right {
+                content: "ООО ИК «СИБИНТЕК»";
+                font-size: 10pt;
+                color: #333;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .company-name {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .document-title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .info-block {
+            margin-bottom: 20px;
+        }
+        
+        .info-row {
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+            color: #555;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+        
+        .status-new { background-color: #e3f2fd; color: #0d47a1; }
+        .status-work { background-color: #fff3cd; color: #856404; }
+        .status-done { background-color: #d4edda; color: #155724; }
+        .status-closed { background-color: #e2e3e5; color: #383d41; }
+        
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .description {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 3px solid #FFD700;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+        }
+        
+        .signature-block {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .signature-line {
+            width: 45%;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            text-align: center;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-name">ООО ИК «СИБИНТЕК»</div>
+        <div>Система управления сервисными заявками</div>
+        <div>г. Ангарск, Иркутская область</div>
+    </div>
+    
+    <div class="document-title">КАРТОЧКА ЗАЯВКИ №{{ zayavka.id_zayavki }}</div>
+    
+    <div class="info-block">
+        <div class="info-row">
+            <span class="info-label">Название заявки:</span>
+            <span class="info-value">{{ zayavka.naimenovanie }}</span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Статус:</span>
+            <span class="info-value">
+                {% if zayavka.status %}
+                    <span class="status-badge 
+                        {% if zayavka.status.status == 'Новая' %}status-new
+                        {% elif zayavka.status.status == 'В работе' %}status-work
+                        {% elif zayavka.status.status == 'Выполнена' %}status-done
+                        {% elif zayavka.status.status == 'Закрыта' %}status-closed
+                        {% endif %}">
+                        {{ zayavka.status.status }}
+                    </span>
+                {% else %}
+                    Не задан
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Сервис/Оборудование:</span>
+            <span class="info-value">{{ zayavka.servis.naimenovanie|default:"Не указан" }}</span>
+        </div>
+        
+        {% if zayavka.servis %}
+        <div class="info-row">
+            <span class="info-label">Адрес:</span>
+            <span class="info-value">{{ zayavka.servis.adress|default:"—" }}</span>
+        </div>
+        {% endif %}
+        
+        <div class="info-row">
+            <span class="info-label">Исполнитель:</span>
+            <span class="info-value">
+                {% if zayavka.ispolnitel %}
+                    {{ zayavka.ispolnitel.familia }} ({{ zayavka.ispolnitel.user.username }})
+                {% else %}
+                    Не назначен
+                {% endif %}
+            </span>
+        </div>
+        
+        <div class="info-row">
+            <span class="info-label">Дата создания:</span>
+            <span class="info-value">{{ zayavka.data_sozdaniya_zayavki|date:"d.m.Y H:i" }}</span>
+        </div>
+        
+        {% if zayavka.srok_zayavki %}
+        <div class="info-row">
+            <span class="info-label">Срок выполнения:</span>
+            <span class="info-value">{{ zayavka.srok_zayavki|date:"d.m.Y" }}</span>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="section-title">Описание проблемы</div>
+    <div class="description">{{ zayavka.opisanie_problem|default:"Не указано" }}</div>
+    
+    <div class="signature-block">
+        <div class="signature-line">
+            Исполнитель<br>
+            {% if zayavka.ispolnitel %}{{ zayavka.ispolnitel.familia }}{% endif %}
+        </div>
+        <div class="signature-line">
+            Дата подписи<br>
+            {{ datetime|date:"d.m.Y" }}
+        </div>
+    </div>
+    
+    <div class="footer">
+        Документ сгенерирован автоматически {{ datetime|date:"d.m.Y H:i" }}<br>
+        ООО ИК «СИБИНТЕК» | Система управления заявками
+    </div>
+</body>
+</html>

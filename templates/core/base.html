@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}СИБИНТЕК - Система управления заявками{% endblock %}</title>
+    <style>
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #E6C200;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg: #111827;
+            --card: #1f2937;
+            --text: #f9fafb;
+            --text-light: #9ca3af;
+            --border: #374151;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.2s; }
+
+        /* Header */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-img {
+            height: 48px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-subtitle {
+            font-size: 12px;
+            color: #000;
+            opacity: 0.8;
+            display: block;
+            margin-top: -4px;
+        }
+
+        .main-nav ul {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .main-nav a {
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .main-nav a:hover {
+            background: rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
+        .main-nav a.active {
+            background: rgba(0,0,0,0.15);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #000;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            border: 3px solid rgba(0,0,0,0.2);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #000;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #059669; transform: translateY(-2px); }
+
+        .btn-secondary { background: var(--text-light); color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+
+        .btn-admin { background: var(--danger); color: white; }
+        .btn-admin:hover { background: #dc2626; transform: translateY(-2px); }
+
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* Кнопка темы — круглая с иконкой */
+        .btn-theme {
+            background: rgba(0,0,0,0.15);
+            border: 2px solid rgba(0,0,0,0.2);
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        .btn-theme:hover {
+            background: rgba(0,0,0,0.25);
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        .btn-theme svg {
+            width: 20px;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Иконки темы */
+        .icon-sun { display: block; }
+        .icon-moon { display: none; }
+
+        [data-theme="dark"] .icon-sun { display: none; }
+        [data-theme="dark"] .icon-moon { display: block; }
+
+        [data-theme="dark"] .btn-theme {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.2);
+            color: #FFD700;
+        }
+
+        [data-theme="dark"] .btn-theme:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Footer */
+        .main-footer {
+            background: var(--card);
+            border-top: 2px solid var(--border);
+            padding: 32px 0;
+            margin-top: 48px;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo-img { height: 40px; }
+
+        .footer-text {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Utility */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-new { background: #dbeafe; color: #1d4ed8; }
+        .badge-work { background: #fef3c7; color: #b45309; }
+        .badge-done { background: #d1fae5; color: #047857; }
+        .badge-closed { background: #f3f4f6; color: #4b5563; }
+
+        .priority-high { background: #fee2e2; color: #dc2626; }
+        .priority-medium { background: #fef3c7; color: #d97706; }
+        .priority-low { background: #d1fae5; color: #059669; }
+
+        /* Messages */
+        .messages-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 24px 0;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .message.success { background: #d1fae5; color: #047857; border-left: 4px solid #10b981; }
+        .message.error { background: #fee2e2; color: #dc2626; border-left: 4px solid #ef4444; }
+        .message.warning { background: #fef3c7; color: #b45309; border-left: 4px solid #f59e0b; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; }
+            .main-nav ul { flex-wrap: wrap; justify-content: center; }
+            .user-info { display: none; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="https://s.rbk.ru/v1_companies_s3/media/trademarks/a1de0564-3187-4d92-99fd-1589bcf10d62.jpg"
+                         alt="СИБИНТЕК" class="logo-img">
+                    <div>
+                        <div class="logo-text">СИБИНТЕК</div>
+                        <span class="logo-subtitle">Система управления заявками</span>
+                    </div>
+                </div>
+
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/" class="{% if request.resolver_match.url_name == 'requests_list' %}active{% endif %}">Заявки</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'my_requests' %}" class="{% if request.resolver_match.url_name == 'my_requests' %}active{% endif %}">Мои</a></li>
+                        {% if is_manager %}
+                        <li><a href="{% url 'statistics' %}" class="{% if request.resolver_match.url_name == 'statistics' %}active{% endif %}">Статистика</a></li>
+                        <li><a href="{% url 'archive_list' %}" class="{% if request.resolver_match.url_name == 'archive_list' %}active{% endif %}">Архив</a></li>
+                        {% endif %}
+                        <!-- ✅ Кнопка Создать только для менеджеров и админов -->
+                        {% if is_manager or user.is_superuser %}
+                        <li><a href="{% url 'create_request' %}">Создать</a></li>
+                        {% endif %}
+                        {% endif %}
+                        {% if user.is_superuser %}
+                        <li><a href="/admin/" class="btn btn-admin" target="_blank">Админка</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="user-section">
+                    {% if user.is_authenticated %}
+                    <div class="avatar">{{ user.username|first|upper }}</div>
+                    <div class="user-info">
+                        <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+                        <span class="user-role">
+                            {% if user.is_superuser %}Администратор
+                            {% elif is_manager %}Менеджер
+                            {% else %}Исполнитель{% endif %}
+                        </span>
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary">Выход</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-secondary">Вход</a>
+                    {% endif %}
+                    
+                    <!-- Кнопка переключения темы с иконками -->
+                    <button class="btn-theme" onclick="toggleTheme()" title="Сменить тему">
+                        <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="https://s.rbk.ru/v1_companies_s3/media/trademarks/a1de0564-3187-4d92-99fd-1589bcf10d62.jpg"
+                     alt="СИБИНТЕК" class="footer-logo-img">
+                <span style="font-size: 20px; font-weight: 700; color: var(--primary);">СИБИНТЕК</span>
+            </div>
+            <p class="footer-text">© 2026 ООО ИК «СИБИНТЕК». Система управления сервисными заявками.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    setTimeout(function() { message.remove(); }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
