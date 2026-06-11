@@ -9,4 +9,9 @@ build:
 
 run:
   containerPort: 8000
-  persistentMount: /app/data
+  persistentMount: /app
+
+volumes:
+  - /app/db.sqlite3
+  - /app/media
+  - /app/staticfiles
